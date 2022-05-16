@@ -5,22 +5,24 @@ const login = async(req, res, next) => {
     if (!username || !password) {
         throw new CustomAPIError('Please provide a username and password', 400);
     }
-    const id = new Date().getDate();
 
+
+    const id = new Date().getDate();
     //only for demo betteer ID in the db
     const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     });
 
-    res.send(`username: ${username}\n password: ${password}`);
+    res.status(200).json({ msg: "User created successfully", token });
 }
 
-const dashboard = async(req, res, next) => {
-    const luckyNumber = Math.floor(Math.random() * 100);
+const dashboard = async(req, res) => {
+    const luckyNumber = Math.floor(Math.random() * 100)
+
     res.status(200).json({
-        message: "Hello, John",
-        luckyNumber
-    });
+        msg: `Hello, ${req.user.username}`,
+        secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
+    })
 }
 
 export { login, dashboard };
